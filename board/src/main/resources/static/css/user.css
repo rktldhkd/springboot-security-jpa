@@ -1,0 +1,270 @@
+@CHARSET "UTF-8";
+
+.findIdPw_wrap{
+	width:380px;
+	height: 300px;
+}
+
+.btn_comm{
+	padding: 3px 8px;
+	color: #888;
+	border: 1px solid #999;
+	cursor: pointer;
+}
+
+.btn_comm:HOVER{
+	background-color: #eee;
+}
+
+/*CSS of findId, findPw.jsp*/
+
+
+.findIdPw_header_wrapper{
+	background-color: #a4d0ce;
+	border-bottom: 2px solid #52a09c;
+}
+.findIdPw_header{
+	overflow:hidden;
+	padding: 10px 12px;
+}
+
+.findIdPw_notice h3{
+	display: inline;
+	color: #333;
+}
+.findIdPw_header_otherlink{
+	float: right;
+}
+.findIdPw_header_otherlink:hover{
+	text-decoration: underline;
+	color: #555;
+}
+
+
+.findIdPw_contents_wrapper{
+	border-bottom: 1px solid #555;
+	margin-bottom: 2px;
+}
+.findIdPw_contents_area{
+	padding: 15px 25px;
+}
+.findIdPw_guide{
+	color: #666;
+	margin-bottom: 12px;
+}
+
+
+.findIdPw_inputField{
+	margin-bottom: 15px;
+	text-align: center;
+}
+.findIdPw_inputField input{
+	padding: 3px 4px;
+	width: 90%;
+	font-size: 14px;
+}
+.findIdPw_inputId{
+	margin-bottom: 6px;
+}
+.findIdPw_inputName{
+	margin-bottom: 6px;
+}
+
+
+.findIdPw_btnField_wrapper{
+	margin-bottom: 16px;
+}
+.findIdPw_btnField{
+	text-align: center;
+}
+
+
+.findIdPw_footer_wrapper{
+	overflow: hidden;
+}
+.findIdPw_footer_btn{
+	padding-right: 2px;
+	float: right;
+}
+
+.missing_notice_wrapper{
+	margin-bottom: 15px;
+	border: 1px solid #faebcc;
+	border-radius: 4px;
+}
+.missing_notice{
+	padding: 10px 15px;
+	color: #F34700;
+    background-color: #fcf8e3;
+    line-height: 18px;
+}
+
+.idPw_result_wrapper{
+	border: 1px solid #11C74A;
+	border-radius: 2px;
+}
+.idPw_result{
+	padding: 10px 15px;
+	color: #199A04;
+    background-color: #D0F8CF;
+    line-height: 18px;
+}
+
+/*modifyInfo.jsp*/
+.chk_f{
+	margin-bottom: 10px;
+}
+
+.modifyInfo_wrapper{
+	width:80%;
+}
+
+.reconfirm_wrapper{
+	width:50%;
+	margin-top:5px;
+	border:2px solid #d0d0d0;
+	background-color: #fff;
+}
+.reconfirm_area{
+	padding:20px 25px;
+}
+.reconfirm_area div:last-child{
+	margin-bottom: 0px;
+}
+.reconfirm_area input{
+	width:100%;
+	padding:8px;
+	font-size:16px;
+	border:1px solid #D6D6D6;
+}
+.reconfirm_id{
+	margin-bottom: -1px;
+	background-color: #f8f8f8;
+}
+.reconfirm_btns{
+	width:100%;
+	margin-top: 18px;
+	text-align: center;
+}
+.reconfirm_btns input{
+	width:100%;
+	letter-spacing:10px;
+	cursor: pointer;
+	font-family: Helvetica Neue, Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", Dotdum;
+}
+.reconfirm_btns_submit{
+	width:100%;
+}
+
+
+
+.userInfo_wrapper{
+	width:70%;
+	border:1px solid #d0d0d0;
+	background-color: #fff;
+}
+.userInfo_wrapper form .addr_area label{
+	margin-bottom: 10px;
+}
+.userInfo_wrapper form .addr_area span{
+	display: none;
+}
+.userInfo_wrapper form .addr_area #searchAddr{
+	padding: 2px 6px;
+	width:62px;
+}
+
+.id_wrapper{
+	background-color: #ceceff;
+	border-bottom:1px solid #d0d0d0;
+	margin-bottom: 2px; 
+	font-family: Helvetica Neue, Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", Dotdum;
+}
+.id_area{
+	padding: 10px 14px;
+	font-size: 14px;
+}
+.id_area font{
+	font-size: 16px;
+	font-weight: bold;
+}
+.modifyInfo_notice{
+	padding: 10px 14px;
+	font-size: 12px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #d0d0d0;
+}
+.modifyInfo_notice p{
+	margin-bottom: 3px;
+}
+.modifyInfo_notice p:FIRST-CHILD{
+	font-size: 14px;
+	font-weight: bold;
+	padding: 0px 0px 2px 0px;
+}
+.modifyInfo_notice ul{
+	padding-left: 16px;
+}
+.modifyInfo_notice ul li{
+	list-style: disc;
+	margin:6px 0px;
+}
+.modifyInfo_notice ul li span{
+	color: #ff9900;
+}
+.modifyInfo_notice div:last-child{
+	padding:10px 0px 4px 0px;
+	text-align: center;
+}
+
+.modifyUser_f{
+	padding: 10px 14px;
+}
+.modifyUser_f div, .modifyUser_f span{
+	margin-bottom: 18px;
+}
+.modifyUser_f label{
+	font-weight: bold;
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+.modifyUser_f input{
+	width:100%;
+	height:auto;
+	padding: 6px;
+	font-family: Helvetica Neue, Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", Dotdum;
+	font-size: 16px;
+	line-height:1;
+	border: 1px solid #ccc;
+}
+.modifyUser_f .allow_datepicker{
+	width:93%;
+}
+.modifyUser_f .birth_area img{
+	position: inherit!important;
+	height: 28px;
+    padding-bottom: 2px;
+    margin-left: 10px;
+}
+.modifyUser_f label{
+	display: block;
+}
+
+.btn_wrapper{
+	margin-top:30px;
+	display: none;
+}
+.btn_area div{
+	text-align: center;
+}
+.btn_area input, .modifyInfo_notice div:last-child button{
+	width:40%;
+	padding: 10px 8px;
+	cursor: pointer;
+	height:auto;
+	font-family: Helvetica Neue, Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", Dotdum;
+	font-size: 16px;
+	line-height:1;
+	border: 1px solid #ccc;
+	letter-spacing: 2px;
+}

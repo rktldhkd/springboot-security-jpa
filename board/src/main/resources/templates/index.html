@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="context-path" th:content="@{/}"/>
+    
+    <title>home : board</title>
+    
+    <!--  Common header -->
+    <!-- <th:block th:include="common/include-link"></th:block> -->
+    <!-- Custom styles for sidebar -->
+    <!-- <link th:href="@{/css/sidebar.css}" rel="stylesheet"> -->
+</head>
+<body>
+<!-- 
+sidebar : 메뉴를 담고 있는 영역
+
+Header : 이미지 및 타이틀 표현하는 영역
+
+dynamic content : 메인 내용을 표현하는 영역. 메뉴에서 선택 시 선택한 메뉴에 따라서 변경되는 영역
+
+Footer : 저자, 작성 날짜 등의 내용을 표현하는 영역
+ -->
+ 
+    <!-- Common script -->
+    <!-- <th:block th:include="common/include-script"></th:block> -->
+ 
+    <div class="wrapper">
+        <!-- Side Bar -->
+        <nav th:replace="common/common-sidebar"></nav>
+        <div id="content">
+            <!-- Page Header -->
+            <header th:replace="common/common-header"></header>
+            
+            <!-- Main Content -->
+            <div th:replace="${template}"></div>
+            
+            <hr>
+            
+            <!-- Footer -->
+            <footer th:replace="common/common-footer"></footer>
+        </div>
+    </div>
+    
+</body>
+</html>

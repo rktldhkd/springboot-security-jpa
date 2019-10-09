@@ -1,0 +1,33 @@
+[[파일 설명]]
+SampleApplication.java : app을 시작할 수 있는 main 함수가 존재하는 스프링 구성 메인 클래스.
+
+templates 폴더 : 여러가지 view 템플릿 파일 위치.(thymeleaf등등)
+
+static : 정적 자원 폴더.(이미지,파일,js파일 등)
+
+//bootstrap.yml 설정파일 
+bootstarp.yml : 스프링 cloud config 사용하여 clinent단으로 지정, bootstarp.yml에서 config 서버를 지정하여 거기서 설정파일값 가져옴.
+
+//밑의 설정파일들은  bootstrap.yml 만들면서 설정파일로 안쓰려고 src/main/resources/origin_propertiesAndxml 에 박아두었다.
+//만일 프로젝트 설정에 문제가 생겨 에러가 나면 아래 파일들을 다 지워버리고 다시 실행해보자. 이전꺼 어떻게했는지 보려고 남겨둔거임.
+application~.properties : app 및 스프링의 설정등에서 사용할 여러가지 프로퍼티property 정의.
+application.properties : 개발환경, 운영환경에 관계없이 공통으로 사용하는 설정.
+application-dev.properties : 개발환경에서 사용할 설정.
+application-production.properties : 운영환경에서 사용할 설정.
+
+project and External Dependencies 항목 : 그레들에 명시한 프로젝트 필수 라이브러리 모음.
+
+src/main/java : 자바 소스 디렉토리(controller/service/model)
+
+src 폴더 : JSP 등 리소스 디렉토리.
+
+bundle.gradle : 그레들 빌드 명세, 프로젝트에 필요한 라이브러리/의존(dependency) 관리, 빌드 및 배포 설정.
+스프링 부트 버전, 자바버전, 외부저장소 라이브러리 관리 등등을 확인 가능.
+
+logback-spring.xml : log4j 보다 성능 좋은 로깅 관련 라이브러리.
+
+log4jdbc.log4j2.properties : log4jdbc 설정. 로그에서 쿼리관련 로그를 가독성있게 정렬하여 보여준다.
+
+======================================================
+
+src/main/java 의 mapper 패키지 : DAO 객체

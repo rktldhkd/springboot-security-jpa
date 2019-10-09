@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="context-path" th:content="@{/}"/>
+<!-- import resources -->
+<th:block th:include="include/include-link"></th:block>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+<style>
+#wrap{width:100%; background-color: #F5F5F5;}
+#wrap #content{width:570px; padding-top: 40px;}
+
+#content{margin: 0px auto;}
+
+/* 요일(한글/영문)에 색상 표시 */
+.ui-datepicker-week-end:first-child{color:#f00;}
+/* IE 8이하는 :last-child 동작 안함, beforeShowDay 함수 호출시 saturday class를 return으로 처리 */
+.ui-datepicker-week-end:last-child{color:#00f;}
+/* 날짜(일)에 색상 표시 */
+.ui-datepicker-calendar > tbody td:first-child a {COLOR: #f00;}
+.ui-datepicker-calendar > tbody td:last-child a {COLOR: blue;}
+
+/* 선택한날짜 색상 변경 */
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {  
+    color: white;  /*글자색상*/
+    background: #6A6A6A; /*배경색상*/
+    font-weight: 900;
+}
+</style>
+<!-- import script -->
+<th:block th:include="include/include-script"></th:block>
+<script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script th:src="@{/js/user.js}" charset="utf-8"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<title>가입 : 회원 정보 입력</title>
+<script type="text/javascript">
+//폼데이터 검사
+function chkForm(){
+	var frm 		= $("#join_form");
+	var id 		= $("#id");
+	var pwd 	= $("#pwd");
+	var name	= $("#name");
+	var mail1	= $("#mail1");
+	var mail2	= $("#mail2");
+	var yy		= document.getElementById("datepicker");
+	var ph0		= $("#ph0");
+	var ph1		= $("#ph1");
+	var ph2		= $("#ph2");
+	var zipcode	= $("#zipcode");
+	var addr 		= $("#addr");
+	var d_addr		= $("#detailAddr");
+	
+	var regId 	  = /^[a-z0-9_]{5,20}$/gi;
+//	var regPw 	  = /^[a-zA-Z0-9!@#$%^&*()-=\_+|]{6,16}$/gi; //구버전
+	var regPw 	  = /^(?=.*[a-zA-Z])(?=.*[!@#&$%^*+=-])(?=.*[0-9]).{6,16}$/gi; //영문,특수문자,숫자를 다 혼용해야 패스워드 체크에 통과되는 정규식
+	var regNm	  = /^[가-힣]{2,6}$/;
+	var regEm1  = /^[a-z0-9]{4,20}$/;
+	var regEm2  = /^[a-z0-9.]{4,20}$/;
+	var regPh1	  = /^[0-9]{3,4}/g;
+	var regPh2	  = /^[0-9]{4}/g;
+	var regDeAddr = /[^ㄱ-ㅎㅏ-ㅣ가-힣0-9-\s,]/g; /* /^[가-힣|a-z|A-Z|0-9]{3,20}/g */
+	
+	if(!regId.test(id.val())){
+		alert("아이디는 5~20자의 영문 소문자, 숫자와 특수기호(_)만 사용 가능합니다.");
+		id.focus();
+		return false;
+	}//id
+	
+	if(!regPw.test(pwd.val())){
+		alert("비밀번호는 6~16자의 영문 대 소문자, 숫자, 특수문자를 사용하십시오.");
+		pwd.val("");
+		$("pwdChk").val("");
+		pwd.focus();
+		return false;
+	}else{
+		if($("#pwdChk").val() != pwd.val()){
+			alert("비밀번호와 일치하지 않습니다.");
+			$("#pwdChk").val("");
+			$("#pwdChk").focus();
+			return false;
+		}
+	}//비밀번호
+	
+	if(!regNm.test(name.val())){
+		alert("이름을 형식에 맞게 입력하세요.");
+		name.focus();
+		return false;
+	}//이름
+	
+	var male 	= document.getElementById("male").checked; 
+	var female = document.getElementById("female").checked; 
+	if(male==false && female==false){
+		alert("성별을 선택하세요.");
+		male.checked = true;
+		return false;
+	}//성별
+	
+	
+	var y_compareVal = yy.value;
+	// 사용가능 하지 않은 년도 체크   
+	if (y_compareVal.substr(0,2) < 19 || y_compareVal.substr(0,4) > new Date().getFullYear()){ 
+    	alert("유효하지 않은 년도입니다.");
+	    yy.focus();
+	    return false;
+    }//생년월일의 년도   
+	
+	if(!regEm1.test(mail1.val())){
+		alert("이메일을 형식에 맞게 입력하세요.");
+		mail1.focus();
+		return false;
+	}//id
+	if(!regEm2.test(mail2.val())){
+		alert("mail2의 이메일을 형식에 맞게 입력하세요.");
+		mail2.focus();
+		return false;
+	}
+	
+	if(!regPh1.test(ph1.val())){
+		alert('전화번호를 형식에 맞게 입력하세요. -1');
+		ph1.focus();
+		ph1.val('');
+		return false;
+	}
+	if(!regPh2.test(ph2.val())){
+		alert('전화번호를 형식에 맞게 입력하세요.');
+		ph2.focus();
+		ph2.val('');
+		return false;
+	}
+	
+	if(zipcode.val().length == 0 || addr.val().length == 0){
+		alert("주소를 입력하세요.");
+		return false;
+	}
+	if(regDeAddr.test(d_addr.val())){
+		alert("주소 상세 입력란을 형식에 맞게 채워주세요.");
+		d_addr.focus();
+		d_addr.val('');
+		return false;
+	}
+	if(d_addr.val() == "" || d_addr.val() == null){
+		alert("상세주소를 입력하세요.");
+		d_addr.focus();
+		return false;
+	}
+	
+	//replace(/(^\s*)|(\s*$)/gi, ""); - 공백 제거
+	var birth 	= $("#datepicker").val().replace("-","").replace("-","");
+	var email 	= mail1.val() + "@" + mail2.val();
+	var phone 	= ph0.val() + "-" + ph1.val() + "-" + ph2.val();
+	$("#BIRTH").val(birth);
+	$("#EMAIL").val(email);
+	$("#PHONE").val(phone);
+		
+	//frm.action		= "<c:url value='/join/joinSuccess.do'/>";
+	//frm.method 	= "post";
+	frm.submit();
+}//chkForm
+
+//////  jquery 시작  //////
+$(function() {
+	//jQuery 달력
+	var calAttr = {
+	         dateFormat: 'yy-mm-dd',
+	         //startDate : 'c-c-c',
+	         //// 오늘 날짜 부터 100년 이전의 오늘 날짜까지만 선택 가능하다. 오늘 이후의 날짜는 선택 불가.
+	         // 오늘 날짜를 기준으로 minDate는 선택가능한 이전의 날짜 영역 지정가능하게끔함.
+	         // "		"		" 		 maxDate는 선택가능한 이후의 날짜 영역 지정가능하게끔함.
+	         // maxDate 가 '0'이면 오늘 이후의 날짜는 선택하지 못한다.
+	         //minDate : "-110y",
+	         maxDate : "0",
+	         ////
+	         changeMonth : true, //월 선택을 select-option으로 보여줄지 여부
+	         changeYear : true, //년도 선택을 select-option으로 보여줄지 여부
+	         showButtonPanel : true, // 달력 하단의 닫기,오늘날짜 버튼이 있는 버튼 패널 보여줄지 여부
+	         currentText : '오늘날짜', // 버튼패널의 오늘날짜를 보여주는 버튼에 텍스트 지정
+	         closeText : '닫기', // 버튼패널의 닫기 기능을 하는 버튼에 텍스트 지정
+	         prevText: '이전 달',
+	         nextText: '다음 달',
+	         monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	         monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	         dayNames: [ '일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+	         dayNamesShort: [ '일', '월', '화', '수', '목', '금', '토'],
+	         dayNamesMin: [ '일', '월', '화', '수', '목', '금', '토'],
+	         showMonthAfterYear: true,
+	         yearRange: 'c-110:c', //'c-99:c+99', // 년도의 select 박스에서 년도 선택 시, 년도의 검색 범위를 지정.
+	         yearSuffix: '년',
+	         showOn: 'both', // 버튼과 텍스트 필드 또는 모두 캘린더에 표시할지 여부 선택. 필수
+	         buttonImageOnly: true, //달력버튼이미지만 표시한다.('...'표시 생략)
+	         //buttonImage: '<c:url value="/common/images/contents/calendar_icon_expansion.jpg"/>',  // 달력버튼이미지 설정.
+	         buttonImage: '/images/contents/calendar_icon_expansion.jpg',  // 달력버튼이미지 설정.
+	         buttonText: '달력선택'  //버튼안에
+	};
+    $("#datepicker").datepicker(calAttr);
+	$('img.ui-datepicker-trigger' ).prop('align' , 'absmiddle' ); // css 문제가 있는경우 일부 위치 조절 :)
+	$('img.ui-datepicker-trigger' ).css('position' , 'absolute' ).css('top', '15px'); // css 문제가 있는경우 일부 위치 조절 :)
+	///////달력 끝//////
+	
+	//////////// 키 입력 시 즉각적으로 입력 방지 기능 ////////////
+	//형식에 맞지 않는 텍스트 입력 방지.
+	$('#id').keyup(function(evt){
+		if(!(evt.keyCode>36 && evt.keyCode<41)){
+			/* var obj_id		= $(this);
+			obj_id.val(obj_id.val().replace(/[^a-z0-9_]$/gi,"")); */
+			var obj_id		= $(this).val();
+			$(this).val(obj_id.replace(/[^a-z0-9_]/gi,""));
+		}
+	});
+	$('#pwd, #pwdChk').keyup(function(evt){
+		var obj_pw	= $(this);
+		$(this).val($(this).val().replace( /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, ''));
+	});
+	$('#name').keyup(function(evt){
+		var obj_name 	= $(this);
+		//원본:영문입력불가 var tmpreg 		= /[a-z0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g;
+		//수정본:영문입력가능
+		var tmpreg 		= /[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g;
+		obj_name.val(obj_name.val().replace(tmpreg,""));
+	});
+	$('#mail1, #mail2').keyup(function(evt){
+		var obj_m1 = $(this);
+		obj_m1.val(obj_m1.val().replace(/[^a-z0-9.]$/gi,""));
+	});
+	$('#ph1, #ph2').keyup(function(evt){
+		var obj_p1 = $(this);
+		obj_p1.val(obj_p1.val().replace(/[^0-9]/g, ""));
+	});
+	$('#detailAddr').keyup(function(evt){
+		var obj_deAddr 	= $(this);
+		obj_deAddr.val(obj_deAddr.val().replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣0-9-\s,]/g, "")); // \s : 공백허용.
+	});
+	
+	//한글입력방지
+	$('#pwd').css({"ime-mode" : "disabled"});
+	$('#pwdChk').css({"ime-mode" : "disabled"});
+	$('.email').css("ime-mode", "disabled");
+	$('#ph1').css("ime-mode", "disabled");
+	$('#ph2').css("ime-mode", "disabled");
+});//jQuery
+
+
+// 아이디 중복 확인
+function chkId(){
+	var id 	    = $("#id").val();
+	var idChk 	= $("#idChk"); 
+	var regId 	  = /^[a-z0-9_]{5,20}$/gi;
+	
+	// 먼저 형식에 맞는 데이터인지 검사하고, 검사에 통과하면, DB에서 중복아이디 여부를 체크한다.
+	if(!regId.test(id)){
+		idChk.removeClass("good").addClass("bad");
+		idChk.text("아이디가 형식에 맞지 않습니다.");
+		/* $("#id").val("");
+		$('#id').focus(); */
+		return false;
+	}//end if
+	
+	$(function(){
+		$.ajax({
+			type : "POST",
+			url : "/join/chkId",
+			data : "userId="+id,
+			dataType : "json",
+			success: function(result){//컨트롤러에서 return된 객체인 result.
+				if(result > 0){
+					idChk.removeClass("good").addClass("bad");
+					idChk.text("사용할 수 없는 아이디입니다.");
+					$('#id').val("");
+					$('#id').focus();
+				}else{
+					idChk.removeClass("bad").addClass("good");
+					idChk.text("좋은 아이디에요!");
+				}//end if
+			}//success
+		});//end ajax
+	});//jQuery
+}//chkId
+
+// 주소찾기 - 다음 API
+function searchAddr(){
+	/*
+	var location_left 	= (screen.width-640)/2;         
+    var location_top 	= (screen.height-480)/2;
+    var redirectURL	= "<c:url value='/join/openPopupSearchAddr.do' />";
+    var popup_id		= "popup_searchAddr"
+    var spec 			= "scrollbars=no,toolbar=no,resizable=yes,width=547,height=602,left="+location_left+",top="+location_top;
+
+	window.open(redirectURL,popup_id,spec); */
+	var width 	= 547;
+	var height 	= 602;
+    new daum.Postcode({
+    	width:width,
+    	height:height,
+        oncomplete: function(data) {
+        	  // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var fullAddr = ''; // 최종 주소 변수
+            var extraAddr = ''; // 조합형 주소 변수
+
+            // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                fullAddr = data.roadAddress;
+
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                fullAddr = data.jibunAddress;
+            }
+
+            // 사용자가 선택한 주소가 도로명 타입일때 조합한다.
+            if(data.userSelectedType === 'R'){
+                //법정동명이 있을 경우 추가한다.
+                if(data.bname !== ''){
+                    extraAddr += data.bname;
+                }
+                // 건물명이 있을 경우 추가한다.
+                if(data.buildingName !== ''){
+                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+                fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+            }
+
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('zipcode').value = data.zonecode; //5자리 새우편번호 사용
+            document.getElementById('addr').value = fullAddr;
+
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById('detailAddr').focus();
+        },//oncomplete
+        theme : {
+        	searchBgColor		: "", //배경 색상 지정. 지정 x시, 기본값 하얀색.
+        	queryTextColor 	: "" // 폰트 색상 지정. 지정 x시, 기본값 검정색.
+        }//theme
+    }).open({
+    	q: '판교역로 235',
+    	left: (window.screen.width / 2) - (width / 2),
+        top: (window.screen.height / 2) - (height / 2)
+    });
+}//searchAddr
+</script>
+</head>
+<body>
+<div id="wrap" style="height:930px;">
+	<div id ="logo">
+		<img th:src="@{/images/logo/logo.png}" alt="/images/logo/logo.png" onclick="location.href='/'"/>
+	</div>
+	<main id="content">
+		<form id="join_form" action="/jpa/user/openMemberInput" method="POST">
+			<!-- 아래 3개는 나눠진 값들을 합쳐서 보내거나 날짜 가공하느라 hidden으로 따로 뺌. name값이 중요-->
+			<input type="hidden" id="BIRTH" name="BIRTH" />
+			<input type="hidden" id="EMAIL" name="email" />
+			<input type="hidden" id="PHONE" name="phone" />
+			<div class="row_group">
+				<div id="idDiv" class="join_row">
+					<span id="part_id">
+						<!-- autofocus="autofocus" tabindex="1" , 페이지 이동 시 자동 포커스 주기와 tab버튼 클릭시 포커스 주는 순서 지정.-->
+						<input type="text" id="id" name="username" maxlength="20" placeholder="아이디" onblur="chkId()" style="width:360px;" />
+					</span>
+					<span id="idChk" class="posi_right" style="top:20px; right:9px;">
+						<!-- ajax로 실시간 아이디 체크 후, 판단값 입력 구역. -->
+					</span>
+					<div class="notice_area"><font color="red">*필수</font> 5~20자의 영문 소문자, 숫자와 특수기호(_)만 사용 가능합니다.</div>
+				</div>
+				<div id="pswDiv1" class="join_row">
+					<span id="part_pwd">
+						<input type="password" id="pwd" name="password" maxlength="20" placeholder="비밀번호"/>
+					</span>
+					<div class="notice_area"><font color="red">*필수</font> 6~16자의 영문 대 소문자, 숫자, 특수문자를 사용하십시오.</div>
+				</div>
+				<div id="pswDiv2" class="join_row">
+					<span id="part_pwdChk">
+						<input type="password" id="pwdChk" name="pwdChk" maxlength="20" placeholder="비밀번호 재확인"/>
+					</span>
+					<div class="notice_area"><font color="red">*필수</font> 위 입력한 비밀번호와 동일하게 입력하세요.</div>
+				</div>
+			</div>
+			
+			<div class="row_group">
+				<div id="nameDiv" class="join_row">
+					<span id="part_name">
+						<input type="text" id="name" name="name" maxlength="60" placeholder="이름"/>
+					</span>
+					<div class="notice_area"><font color="red">*필수</font> 이름은 2~60자로 형식으로 입력하십시오.</div>
+				</div>
+				<div id="genderDiv" class="join_row join_gender">
+					<span class="sex">
+						<span class="gender" style="border-right: solid 1px #dcdcdc;">
+							<input type="radio" id="male" name="gender" value="M" onclick="chkSex()" style="width:266px;">
+							<label id="maleLb" for="male">남자</label>
+						</span>
+						<span class="gender">
+							<input type="radio" id="female" name="gender" value="F" onclick="chkSex()" style="width:266px;">
+							<label id="femaleLb" for="female">여자</label>
+						</span>
+					</span>
+				</div>
+				<div id="birthDiv" class="join_row"  style="padding: 0px; display: table;">
+					<span style="background-color: #EBEBEB; display:inline-block; padding:11px 15px 11px 15px; font-size: 13px; font-weight: 600; border-right: 1px solid #DADADA;">
+						<p>생일</p>
+						<div class="notice_area" style="width:30px; font-weight: normal;">
+							<font color="red">*필수</font> 
+						</div>
+					</span>
+					<div id="part_yy">
+						<input type="text" id="datepicker" name="birthday" readonly="readonly" placeholder="생년월일" style="width:135px; height:25px; margin-right:4px;"/>
+						<span style="margin-left:24px; font-size: 11px;"><font style="color: blue; font-weight: 600;">&gt;</font>좌측 글자나 달력 아이콘을 클릭하세요.</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row_group">
+				<div id="mailDiv" class="join_row">
+					<div id="part_mail">
+						<input type="text" id="mail1" name="mail1" class="email" maxlength="20" placeholder="이메일주소"  style="width:160px;"/>
+						<span>@</span>
+						<input type="text" id="mail2" name="mail2" class="email" maxlength="20" readonly="readonly" 
+						  style="width:160px; border: 1px solid #cdcdcd; border-radius:5px; padding-left: 5px;"/>
+						<span class="posi_right">
+							<select class="select" name="sel_mail" onChange="getOptVal()">
+								<option selected="selected" value="self">선택하세요</option>
+								<option value='naver.com' >naver.com</option>
+								<option value='daum.net' >daum.net</option>
+								<option value='hanmail.net' >hanmail.net</option>
+								<option value='gmail.com' >gmail.com</option>
+								<option value='nate.com' >nate.com</option>
+								<option value='yahoo.com' >yahoo.com</option>
+								<option value='empas.com' >empas.com</option>
+								<option value='dreamwiz.com' >dreamwiz.com</option>
+								<option value='hanafos.com' >hanafos.com</option>
+								<option value='hotmail.com' >hotmail.com</option>
+								<option value='korea.com' >korea.com</option>
+								<option value='inst' >직접 입력</option>
+							</select>
+						</span>
+					</div>
+					<div class="notice_area"><font color="red">*필수</font> 최소 4자, 최대 20글자까지 설정 가능합니다. 직접입력 시, 우측 선택박스에서 '직접입력' 선택.</div>
+				</div>
+				<div id="phDiv" class="join_row">
+					<div id="part_ph">
+						<span id="tel_part1">
+							<select class="select" id="ph0" name="ph0" style="width:20%;">
+								<option selected="selected" value="self">선택하세요</option>
+										<option value="010">010</option>
+									    <option value="011">011</option>
+									    <option value="018">018</option>
+									    <option value="016">016</option>
+									    <option value="017">017</option> 
+							</select>
+						</span>
+						<span id="tel_part2" style="left:170px;">
+							<input type="text" id="ph1" name="ph1" maxlength="4" placeholder="전화번호 앞" style="width:160px;"/>
+						</span>
+						<span id="tel_part3" style="left:170px;">
+							<input type="text" id="ph2" name="ph2" maxlength="4" placeholder="전화번호 뒤" style="width:160px;"/>
+						</span>
+					</div>
+					<div class="notice_area"><font color="blue">*선택</font> 최대 8자리의 '-'자 제외한 '숫자'만 입력하세요.</div>
+				</div>
+				<div id="addrDiv" class="join_row">
+					<div id="part_addr">
+						<div>
+							<span><input type="text" id="zipcode" name="zipcode" readonly="readonly" placeholder="새우편번호" style="width:120px; height:22px; padding-left: 3px;"/></span>
+							<span><a id="searchAddr" name="searchAddr" class="btn_a" onclick="searchAddr()" 
+								style="position: absolute; top:0px; left:130px; height:12px;">주소찾기</a></span>
+						</div>
+						<div style="margin-top:6px;">
+							<div><input id="addr" name="addr" readonly="readonly" style="width:544px; padding-left: 3px;" placeholder="도로명 혹은 지번 주소"/></div>
+							<div><input id="detailAddr" name="detailAddr" maxlength="20" style="width:544px; padding-left: 3px;" placeholder="상세주소"/></div>
+						</div>
+						<div class="notice_area">
+							<font color="red">*필수</font> 주소 선택 시, 우편번호는 새우편번호 체계의 우편번호가 기재됩니다.<br/>
+							정확히 기재해주셔야 합니다.					
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div>
+				<div>
+					<input type="submit" class="btn_white" id="btn_join" onclick="return chkForm()" title="가입하기" alt="가입하기" value="가입하기" 
+						style="width:570px; margin-top:20px;"/>
+				</div>
+			</div>
+		</form>
+	</main>
+</div>
+</body>
+</html>
