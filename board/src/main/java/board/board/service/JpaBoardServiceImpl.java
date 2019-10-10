@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -13,7 +15,9 @@ import board.board.entity.BoardEntity;
 import board.board.entity.BoardFileEntity;
 import board.board.repository.JpaBoardRepository;
 import board.board.util.FileUtils;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 public class JpaBoardServiceImpl implements JpaBoardService{
@@ -30,7 +34,15 @@ public class JpaBoardServiceImpl implements JpaBoardService{
 
 	@Override
 	public void saveBoard(BoardEntity board, MultipartHttpServletRequest multipartHttpServletRequest) throws Exception {
-		board.setCreatorId("admin");
+		//게시글 작성자 확인
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
+		log.debug("게시글 저장 - 로그인 유저 id 확인" + username);
+//		if(username != "anonymousUser"){ //비로그인 사용자인 경우, principal 값이 anonymouseUser 이다.
+//			id	= username;
+//		}//end if
+		board.setCreatorId(username); //현재 로그인한 사용자 username
+		
 		List<BoardFileEntity> list = fileUtils.parseFileInfo(multipartHttpServletRequest);
 		
 		if(CollectionUtils.isEmpty(list) == false) {

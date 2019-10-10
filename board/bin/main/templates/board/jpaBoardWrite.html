@@ -4,6 +4,15 @@
 	<meta charset="UTF-8">
 	<title>board</title>
 	<link rel="stylesheet" th:href="@{/css/style.css}"/>
+	<th:block th:include="include/include-link"></th:block>
+	<th:block th:include="include/include-script"></th:block>
+	<script type="text/javascript">
+		$(function(){
+			$("#list").on("click", function(){
+				location.href = "/";
+			});
+		});//jquery
+	</script>
 </head>
 <body>
 	<div class="container">
@@ -23,6 +32,7 @@
 	    	</table>
 	    	<input type="file" id="files" name="files" multiple="multiple">
 	    	<input type="submit" id="submit" value="저장" class="btn">
+	    	<a href="#this" id="list" class="btn">목록으로</a>
 	    </form>
     </div>
 </body>

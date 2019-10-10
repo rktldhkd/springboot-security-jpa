@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8">
 	<title>게시글 상세 화면</title>
@@ -55,9 +55,13 @@
 				 th:text="|${list.originalFileName} (${#numbers.formatInteger(list.fileSize/1000, 1, 'DEFAULT')} kb)|"></a>
 		</div>
 		
-		<a href="#this" id="list" class="btn">목록으로</a>
-		<a href="#this" id="edit" class="btn">수정하기</a>
-		<a href="#this" id="delete" class="btn">삭제하기</a>
+		<div class="btn_area">
+			<a href="#this" id="list" class="btn">목록으로</a>
+			<span th:if="${username} eq ${board.creatorId } or ${username} eq 'admin'">
+				<a href="#this" id="edit" class="btn">수정하기</a>
+				<a href="#this" id="delete" class="btn">삭제하기</a>
+			</span>
+		</div>
 	</div>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

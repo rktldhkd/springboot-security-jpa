@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="context-path" th:content="@{/}"/>
     <title>로그인</title>
+    <th:block th:include="include/include-link"></th:block>
+    <th:block th:include="include/include-script"></th:block>
+    <script type="text/javascript">
+    	$(function(){
+    		$('#list').on('click', function(e){
+    			e.preventDefault();
+    			location.href = '/';
+    		});//list.on
+    	});//jquery
+    </script>
 </head>
 <body>
     
@@ -21,7 +31,8 @@
             <div align="center" th:if="${param.error}">
                 <p style="font-size: 20; color: #FF1C19;">ID or Password invalid, please verify</p>
             </div>
-            <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+            <button class="btn btn-primary btn-block" type="submit">로그인</button>
+            <button class="btn btn-primary btn-block" type="button" id="list">목록으로</button>
         </form>
     </div>
 </body>

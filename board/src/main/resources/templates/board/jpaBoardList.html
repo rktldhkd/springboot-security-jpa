@@ -17,8 +17,9 @@
     	</div>
     	<table class="board_list">
 	        <colgroup>
-	            <col width="15%"/>
+	            <col width="10%"/>
 	            <col width="*"/>
+	            <col width="15%"/>
 	            <col width="15%"/>
 	            <col width="20%"/>
 	        </colgroup>
@@ -27,15 +28,18 @@
 	                <th scope="col">글번호</th>
 	                <th scope="col">제목</th>
 	                <th scope="col">조회수</th>
+	                <th scope="col">작성자</th>
 	                <th scope="col">작성일</th>
 	            </tr>
 	        </thead>
 	        <tbody>
+	        	<!-- lists : thymeleaf에서 쓰는 예약어 같은 것. list가 controller에서 보낸 값. -->
 	        	<tr th:if="${#lists.size(list)} > 0" th:each="list : ${list}">
 	        		<td th:text="${list.boardIdx}"></td>
 	        		<!-- 여기 -->
 	        		<td class="title"><a href="/jpa/board/" th:attrappend="href=${list.boardIdx}" th:text="${list.title}"></a></td>
 	        		<td th:text="${list.hitCnt}"></td>
+	        		<td th:text="${list.creatorId}"></td>
 	        		<td th:text="${list.createdDatetime}"></td>
 	        	</tr> 
 	        	<tr th:unless="${#lists.size(list)} > 0">
@@ -44,7 +48,9 @@
 	        </tbody>
 	    </table>
 	    <!-- 여기 -->
-	    <a href="/jpa/board/write" class="btn">글 쓰기</a>
+	    <div sec:authorize="isAuthenticated()">
+	    	<a href="/jpa/board/write" class="btn">글 쓰기</a>
+	    </div>
     </div>
 </body>
 </html>

@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +59,12 @@ public class JpaBoardController {
 		
 		BoardEntity board = jpaBoardService.selectBoardDetail(boardIdx);
 		mv.addObject("board", board);
+		
+		//로그인 사용자 id 가져오기
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
+		log.debug("controller - detail() - username값 : " + username);
+		mv.addObject("username", username);
 		
 		return mv;
 	}
