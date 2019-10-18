@@ -1,0 +1,162 @@
+USE study_springboot;
+
+SHOW TABLES;
+
+CREATE TABLE t_board(
+	board_idx INT(11) NOT NULL AUTO_INCREMENT COMMENT '글 번호',
+	title VARCHAR(300) NOT NULL COMMENT '제목',
+	contents TEXT NOT NULL COMMENT '내용',
+	hit_cnt SMALLINT(10) NOT NULL DEFAULT '0' COMMENT '조회수',
+	created_datetime DATETIME NOT NULL COMMENT '작성시간',
+	creator_id VARCHAR(50) NOT NULL COMMENT '작성자',
+	updated_datetime DATETIME DEFAULT NULL COMMENT '수정시간',
+	updater_id VARCHAR(50) DEFAULT NULL COMMENT '수정자',
+	deleted_yn CHAR(1) NOT NULL DEFAULT 'N' COMMENT '삭제여부',
+	PRIMARY KEY(board_idx)
+);
+
+DESC t_board;
+
+SELECT * FROM t_board;
+
+#게시판에 수동으로 첫 데이터 입력
+INSERT INTO t_board(title, contents, creator_id, created_datetime)
+VALUES('first title', 'first contents', 'admin', NOW());
+
+#unsigned : 타입에서 음수 사용하지 않겠다는 것. 값의 범위가 음수가아닌 0부터 시작.
+CREATE TABLE t_file(
+	idx INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '일련번호',
+	board_idx INT(10) UNSIGNED NOT NULL COMMENT '게시글 번호',
+	original_file_name VARCHAR(255) NOT NULL COMMENT '원본 파일 이름',
+	stored_file_path VARCHAR(500) NOT NULL COMMENT '파일 저장 경로',
+	file_size INT(15) UNSIGNED NOT NULL COMMENT '파일크기',
+	creator_id VARCHAR(50) NOT NULL COMMENT '작성자 아이디',
+	created_datetime DATETIME NOT NULL COMMENT '작성 시간',
+	updator_id VARCHAR(50) DEFAULT NULL COMMENT '수정자 아이디',
+	updated_datetime DATETIME DEFAULT NULL COMMENT '수정 시간',
+	deleted_yn CHAR(1) NOT NULL  DEFAULT 'N' COMMENT '삭제여부',
+	PRIMARY KEY(idx)
+);
+
+DESC t_file;
+SELECT * FROM t_file;
+
+
+CREATE TABLE `t_jpa_board` (
+	`board_idx` INT(11) NOT NULL AUTO_INCREMENT,
+	`contents` VARCHAR(255) NOT NULL,
+	`created_datetime` DATETIME NOT NULL,
+	`creator_id` VARCHAR(255) NOT NULL DEFAULT '',
+	`hit_cnt` INT(11) NOT NULL,
+	`title` VARCHAR(255) NOT NULL,
+	`updated_date_time` DATETIME NULL DEFAULT NULL,
+	`updater_id` VARCHAR(255) NULL DEFAULT NULL,
+	PRIMARY KEY (`board_idx`)
+)
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=8
+;
+
+DESC t_jpa_board;
+SELECT * FROM t_jpa_board;
+
+CREATE TABLE `t_jpa_file` (
+	`idx` INT(11) NOT NULL AUTO_INCREMENT,
+	`created_date_time` DATETIME NOT NULL,
+	`creator_id` VARCHAR(255) NOT NULL,
+	`file_size` BIGINT(20) NOT NULL,
+	`original_file_name` VARCHAR(255) NOT NULL,
+	`stored_file_path` VARCHAR(255) NOT NULL,
+	`updated_date_time` DATETIME NULL DEFAULT NULL,
+	`updator_id` VARCHAR(255) NULL DEFAULT NULL,
+	`board_idx` INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`idx`),
+	INDEX `FK2nbe74xrl4gfj0wnqo1d6dk3l` (`board_idx`),
+	CONSTRAINT `FK2nbe74xrl4gfj0wnqo1d6dk3l` FOREIGN KEY (`board_idx`) REFERENCES `t_jpa_board` (`board_idx`)
+)
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=7
+;
+
+
+DESC t_jpa_file;
+SELECT * FROM t_jpa_file;
+
+
+
+
+
+
+
+
+#enabled 1:사용, 0:사용X
+#zipcode, phone 같은 컬럼에 char형으로 하니까 데이터 인식이 안된다. varchar로 바꿈.
+CREATE TABLE jpa_users(
+	username VARCHAR(50) NOT NULL COMMENT '사용자 아이디',
+	password VARCHAR(500) NOT NULL COMMENT '비밀번호',
+	name VARCHAR(200) NOT NULL COMMENT '사용자 이름',
+	gender CHAR(3) NOT NULL COMMENT '사용자 성별',
+	phone VARCHAR(13) NOT NULL COMMENT '사용자 전화번호',
+	birthday DATE NOT NULL COMMENT '사용자 생일',
+	enabled TINYINT(1) NOT NULL COMMENT '사용 여부',
+	zipcode VARCHAR(5) NOT NULL,
+  	addr VARCHAR(150) NOT NULL,
+  	detail_addr VARCHAR(100) NOT NULL,
+  	email VARCHAR(60) NOT NULL,
+  	reg_date DATETIME NOT NULL,
+	PRIMARY KEY(username)
+)ENGINE=INNODB;
+
+DESC jpa_users;
+
+#jpa_users테이블 생성 후, t_jpa_board의 creator_id에 외래키 생성. jpa_users와 관계 생성.
+ALTER TABLE t_jpa_board
+ADD CONSTRAINT fk_t_jpa_board_creator_id
+FOREIGN KEY (creator_id)
+REFERENCES jpa_users (username);
+
+#관리자 계정 수동 추가
+INSERT INTO jpa_users
+(username, PASSWORD, enabled, name, gender, phone, birthday, zipcode, addr, detail_addr, email, reg_date)
+VALUES('admin', 
+'$2a$10$g.vlIKs1Co9XGWK/V4bfwODRLLOP1IsCH3jDuQc7SyhlmxY9qvFK6', 
+1, 
+'관리자',
+'남자',
+'010-1111-1111',
+NOW(),
+'11111',
+'경기도 헬시 지옥구',
+'요단강 1호',
+'admin@hell.com',
+NOW()
+);
+
+SELECT * FROM jpa_users;
+
+
+
+
+
+CREATE TABLE `jpa_authorities` (
+	`idx` VARCHAR(50) NOT NULL AUTO_INCREMENT,
+	`username` VARCHAR(50) NOT NULL COMMENT '사용자 아이디',
+	`authority` VARCHAR(50) NOT NULL COMMENT '권한',
+	PRIMARY KEY (`idx`),
+	UNIQUE INDEX `uk_jpa_authorities_username` (`username`),
+	CONSTRAINT `fk_authorities_users` FOREIGN KEY (`username`) REFERENCES `jpa_users` (`username`)
+)
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+;
+
+DESC jpa_authorities;
+
+# authority 지정시, ROLE_ 이라는 prefix 붙이자.
+INSERT INTO jpa_authorities
+(username, authority)
+VALUES('admin', 'ROLE_ADMIN');
+
+SELECT * FROM jpa_authorities;

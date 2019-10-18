@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+.centered{
+	margin: 0px auto !important;
+}
+
+.text-center{
+	text-align: center;
+}
+
+.form-signin{
+	margin: 0px auto;
+	width: 300px;
+}
+
+.mb-3{
+	margin: 10px;
+	font-family: auto;
+}
+
+.sr-only{
+    display: none;
+}
+
+.form-control{
+	display: block;
+	margin: 0px auto;
+	width: 250px;
+	height: 20px;
+	padding: 5px 5px;
+	
+}
+
+.form-control:focus {
+    outline: none !important;
+    border:1px solid grey;
+    background-color:#efefef;
+    box-shadow: 0 0 10px #719ECE;
+}
+
+button{
+	margin: 0px !important;
+	width:263px;
+	border-bottom: 1px solid white !important;
+}
+
+input[name=username]{
+	margin-bottom: -1px;
+}
+
+p{
+	width: 263px;
+	margin-bottom: 10px;
+	background-color: #ffffaa;
+}
